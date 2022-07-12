@@ -1,0 +1,10 @@
+{
+  "name": "decentralized-ticket-platform",
+  "private": true,
+  "devDependencies": {},
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  }
+}
