@@ -12,10 +12,6 @@ const NewEvent = () => {
     return (
       <Container>
         <h3>Create an Event</h3>
-        <p>{formInput.name}</p>
-        <p>{formInput.description}</p>
-        <p>{formInput.price}</p>
-        <p>{formInput.supply}</p>
         <Form>
           <Form.Field>
             <label>Event Name</label>
