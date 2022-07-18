@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Card, Button, Container } from "semantic-ui-react";
+import { Button, Container, Box, Wrap, Stack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import Card from "./components/card";
 
 const HomePage = () => {
   const events = [
@@ -17,30 +18,26 @@ const HomePage = () => {
 
   const renderEvents = () => {
     const items = events.map((event) => {
-      return {
-        header: event.name,
-        description: event.description,
-        fluid: true,
-      };
+      return (
+        <Card />
+      );
     });
 
-    return <Card.Group items={items} />;
+    return items;
   };
   return (
-    <Container>
+    <Container centerContent>
       <h3>Current Events</h3>
-      <a>
-        <Link to={"/new"}>
-          <Button
-            floated="right"
-            content="Create Event"
-            icon="add circle"
-            primary
-            labelPosition="left"
-          />
-        </Link>
-      </a>
+      <Box w="1000px">
+        <Stack direction="row" justifyContent="center">
+        <Wrap>
       {renderEvents()}
+      </Wrap>
+      </Stack>
+      </Box>
+      <Link to={"/new"}>
+      <Button my={5} size="lg" colorScheme="blue">Create New Event</Button>
+      </Link>
     </Container>
   );
 };
