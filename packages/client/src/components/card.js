@@ -1,5 +1,4 @@
 import { Box, Button, Image, Badge, Text, HStack } from "@chakra-ui/react";
-import Photo from "../clfinal.jpg";
 import { Link } from "react-router-dom";
 
 const Card = (props) => {
@@ -36,19 +35,19 @@ const Card = (props) => {
         <Text as="h2" fontWeight="semibold" fontSize="xl" my={2}>
           {event.name}
         </Text>
-        <Text fontWeight="light" fontSize="md" noOfLines={5}>
+        <Text fontWeight="light" fontSize="md" noOfLines={3}>
           {event.description}
         </Text>
         <HStack align="baseline" justify="space-between">
           <Text fontWeight="semibold" fontSize="lg">
-            ${event.price}
+            {event.price} ETH
           </Text>
           <Badge variant="solid" rounded="full" colorScheme="green" px={2}>
             Available
           </Badge>
         </HStack>
         <Box textAlign="center">
-          <Link to={"/eventpage"}>
+          <Link to={"/events/" + event.id} state={{ event: event }}>
             <Button mt={3} color="black">
               Go to Event
             </Button>

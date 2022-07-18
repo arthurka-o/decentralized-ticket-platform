@@ -21,6 +21,9 @@ const NewEvent = () => {
   const [formInput, setFormInput] = useState({
     name: "",
     description: "",
+    datetime: "",
+    city: "",
+    venue: "",
     price: "",
     supply: "",
   });
@@ -45,7 +48,6 @@ const NewEvent = () => {
       <Heading as="h3" size="md">
         Create an Event
       </Heading>
-      <FormControl>
         <FormLabel>Event Name</FormLabel>
         <Input
           value={formInput.name}
@@ -61,8 +63,11 @@ const NewEvent = () => {
           backgroundColor="#ffffff"
           type="datetime-local"
           id="datetime"
+          onChange={(event) => setFormInput({ ...formInput, datetime: event.target.value})}
         />
-      </FormControl>
+        <FormLabel>Location</FormLabel>
+        <Input value={formInput.city} onChange={(event) => setFormInput({ ...formInput, city: event.target.value})}>
+        </Input>
       <FormLabel>Description</FormLabel>
       <Textarea
         value={formInput.description}
