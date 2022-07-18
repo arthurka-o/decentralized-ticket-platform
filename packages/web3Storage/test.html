@@ -122,37 +122,31 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { ethers } from "https://cdn-cors.ethers.io/lib/ethers-5.5.4.esm.min.js";
+
+    console.log(ethers.utils.id("hello").slice(0, 10));
     const buttonEthConnect = document.getElementById('sign-up');
     let accounts;
-    let userAddress;
     let contractAddress;
     let ticketPrice;
-    let internalParams =
-      {
-        from: userAddress,
-        to: contractAddress,
-        gas: "0x76c0", // 30400
-        gasPrice: "0x9184e72a000", // 10000000000000
-        value: ticketPrice, // 2441406250
-        data: "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675",
-      };
-
 
 
     if (typeof window.ethereum !== 'undefined') {
-      buttonEthConnect.className = "btn btn-success btn-lg";
-      buttonEthConnect.innerText = "Wallet Connected";
+
       buttonEthConnect.addEventListener('click', async () => {
         // request accounts from ethereum provider
         accounts = await ethereum.request({ method: 'eth_requestAccounts' });
         console.log(accounts);
+        buttonEthConnect.className = "btn btn-success btn-lg";
+        buttonEthConnect.innerText = "Wallet Connected";
       });
     }
+
     async function main() {
       // NEED a function/s in SC which returns whether the user is the owner, ticket holder or needs a button to buy ticket
       //let isOwner = await ethereum.request({ method: 'eth_requestAccounts' });
-      let isOwner = false;
+      let isOwner = await ethereum.request({ method: "eth_call", params: getParamsObj(contractAddress, "", "isOwner()", "") });
       let hasTicket = false;
 
       if (isOwner) {
@@ -160,30 +154,68 @@
         // Need a way of determining
       } else if (hasTicket) {
         //
+        let html = `<div class="card bg-light mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Information</div>
+                      <div class="card-body">
+                        <h5 class="card-title">Additional event info</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      </div>
+                    </div>
+                    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                      <div class="card-header">XMTP Feed</div>
+                      <div class="card-body">
+                        <h5 class="card-title">Messages from event</h5>
+                        <p class="card-text">${XMTP_FEED}</p>
+                      </div>
+                    </div>`
+        document.getElementById('right-centered').insertAdjacentHTML("afterend", html);
+
       } else if (hasTicket == false) {
         buttonEthConnect.className = "btn btn-outline-danger btn-lg";
         buttonEthConnect.innerText = "Buy Ticket";
+        // Name of function to create Hashed output
+        const func = "purchaseTicket()";
         // Hit function purchaseTicket
-        const purchaseTicket = await ethereum.request({ method: "eth_sendTransaction", params: internalParams });
+        const purchaseTicket = await ethereum.request({ method: "eth_sendTransaction", params: getParamsObj(contractAddress, ticketPrice, func, data) });
+        let html = `<div class="card bg-light mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Information</div>
+                      <div class="card-body">
+                        <h5 class="card-title">Additional event info</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      </div>
+                    </div>
+                    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                      <div class="card-header">XMTP Feed</div>
+                      <div class="card-body">
+                        <h5 class="card-title">Messages from event</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      </div>
+                    </div>`
+        document.getElementById('right-centered').insertAdjacentHTML("afterend", html);
+
       }
     }
+    if (ethereum.selectedAddress !== null) {
+      main();
+    }
 
-    main();
 
-    async function sha256(message) {
-        // encode as UTF-8
-        const msgBuffer = new TextEncoder().encode(message);
-
-        // hash the message
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-
-        // convert ArrayBuffer to Array
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-        // convert bytes to hex string
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        const firstBytes = "0x" + hashHex.slice(0, 8) + "000000000000000000000000000000000000000000000000000000000000000";
+    async function kek256(message) {
+        const hashed = ethers.utils.id(message);
+        const firstBytes = hashHex.slice(0, 10) + "000000000000000000000000000000000000000000000000000000000000000";
         return firstBytes;
+    }
+
+    function getParamsObj(contractAddress, ticketPrice = "", func, data = "") {
+      const obj = {
+        from: window.ethereum.selectedAddress,
+        to: contractAddress,
+        gas: "0x76c0", // 30400
+        gasPrice: "0x9184e72a000", // 10000000000000
+        value: ticketPrice, // 2441406250
+        data: kek256(func) + data,
+      }
+      return obj;
     }
 
   </script>
