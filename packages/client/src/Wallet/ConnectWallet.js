@@ -14,7 +14,7 @@ export default function ConnectWallet() {
     return true;
    }
    
-   return "Please connect Metamask to Rinkeby";
+   console.log("Please connect Metamask to Rinkeby");
   }
   
   function initialize(usersAddress) {
