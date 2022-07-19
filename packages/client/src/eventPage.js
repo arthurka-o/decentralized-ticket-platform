@@ -20,6 +20,9 @@ import {
 import { useLocation, Link } from "react-router-dom";
 import CreatorDashboard from "./components/creatorDashboard";
 import TicketHolderDashboard from "./components/ticketHolderDashboard";
+import { getParamsObj } from "./blockchainFunc";
+
+
 
 const EventPage = () => {
   const location = useLocation();
@@ -27,6 +30,16 @@ const EventPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
+  let contractAddress;
+
+
+  async function main() {
+    const ownerAddress = await window.ethereum.request({ method: "eth_call", params: getParamsObj(contractAddress, "0", "isOwner()", "") });
+    if (ownerAddress === window.ethereum.selectedAddress) {
+      setIsCreator(true)
+    }
+  }
+  main();
 
   const renderDashboard = () => {
     if (isCreator) {
@@ -35,7 +48,13 @@ const EventPage = () => {
       return <TicketHolderDashboard />;
     } else {
       return (
-        <Button onClick={() => setIsTicketHolder(true)}>Buy Ticket</Button>
+        <Button onClick={() => {
+          window.ethereum.request({ method: "eth_sendTransaction", params: getParamsObj(contractAddress, event.price, "purchaseTicket()", "") }).then(() => {
+            setIsTicketHolder(true);
+          }).catch((error) => {
+            console.log(error);
+          });
+        } }>Buy Ticket</Button>
       );
     }
   };
@@ -93,11 +112,14 @@ const EventPage = () => {
         <Flex direction="row" justifyContent="flex-end" w="100%">
           {!isLoggedIn ? (
             <Box>
-              <Button onClick={() => setIsLoggedIn(true)}>
+              <Button onClick={async () => {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                setIsLoggedIn(true)}}>
                 Connect Holder Wallet
               </Button>
               <Button
-                onClick={() => {
+                onClick={async () => {
+                  await window.ethereum.request({ method: 'eth_requestAccounts' });
                   setIsLoggedIn(true);
                   setIsCreator(true);
                 }}
