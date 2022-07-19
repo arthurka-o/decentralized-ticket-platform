@@ -1,14 +1,16 @@
-import React from "react";
-import { Box, Heading, Stack } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Heading, Flex, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
-    <Box textAlign="center" mb={10} mt={5}>
+    <Flex justifyContent="center" mb={10} mt={5} w="100%">
       <Link to={"/"}>
         <Heading as="h2" color="black">Decentralised Ticket Platform</Heading>
       </Link>
-    </Box>
+    </Flex>
   );
 };
 

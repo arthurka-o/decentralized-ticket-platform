@@ -1,10 +1,10 @@
 import React from "react";
 import Header from "./components/header";
-import { Container } from "semantic-ui-react";
+import { Container, Box } from "@chakra-ui/react";
 
 const Layout = (props) => {
   return (
-    <Container width="60%">
+    <Container maxW="80%">
         <link
           rel="stylesheet"
           href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"

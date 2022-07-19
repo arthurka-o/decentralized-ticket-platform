@@ -7,7 +7,7 @@ const HomePage = () => {
   const events = [
     {
       id: 1,
-      name: "UEFA Champions League Final 2023",
+      name: "UEFA Champions League Final",
       description:
         "Morbi dui augue, varius ac ultricies a, tempor eget diam. Mauris blandit commodo pretium. Proin ut feugiat felis. Morbi lacinia augue tellus, in imperdiet leo egestas egestas. Morbi vestibulum luctus massa non semper. Aliquam dignissim purus arcu, sit amet convallis tortor pharetra in. Nam a egestas lorem. Quisque porttitor mollis pulvinar.",
       datetime: "25/8/2022 20:00",
