@@ -94,7 +94,7 @@ const EventPage = () => {
           {!isLoggedIn ? (
             <Box>
               <Button onClick={() => setIsLoggedIn(true)}>
-                Connect Wallet
+                Connect Holder Wallet
               </Button>
               <Button
                 onClick={() => {
@@ -102,7 +102,7 @@ const EventPage = () => {
                   setIsCreator(true);
                 }}
               >
-                Creator Login
+                Connect Creator Wallet
               </Button>
             </Box>
           ) : (

@@ -18,7 +18,7 @@ const CreatorDashboard = () => {
                 </Tr>
                 <Tr>
                     <Td>Tickets Available: </Td>
-                    <Td>5000</Td>
+                    <Td>4337</Td>
                 </Tr>
                 <Tr>
                     <Td>Total Earnings: </Td>
