@@ -1,26 +1,57 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.12;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "./Dependencies/CloneFactory.sol";
-import "./TicketNFT.sol";
+import "./Interfaces/IERC721UpgradeableInitializable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/proxy/Clones.sol";
+import "./EventNFT.sol";
+import "@tableland/evm/contracts/ITablelandTables.sol";
 
-contract Factory is CloneFactory {
+contract Factory {
   address public ticketNftImplementation;
-  address[] public clonedContracts;
+  mapping(address => address[]) public clonedContracts;
+
+  ITablelandTables private _tableland;
+  string private _metadataTable;
+  uint256 private _metadataTableId;
 
   event EventCreated(address);
 
-  constructor(address _ticketNftAddress) {
-    ticketNftAddress = _ticketNftAddress;
+  constructor(address _ticketNftAddress, address _registry) {
+    ticketNftImplementation = _ticketNftAddress;
+
+    _tableland = ITablelandTables(_registry);
+
+    /*
+    * Stores the unique ID for the newly created table.
+    */
+    _metadataTableId = _tableland.createTable(
+      address(this),
+      string.concat(
+        "CREATE TABLE event_",
+        Strings.toString(block.chainid),
+        " (id int, description text, image text, name text);"
+      )
+    );
+
+    /*
+    * Stores the full tablename for the new table. 
+    * {prefix}_{chainid}_{tableid}
+    */
+    _metadataTable = string.concat(
+      "event_",
+      Strings.toString(block.chainid),
+      "_",
+      Strings.toString(_metadataTableId)
+    );
   }
 
-  function createNewEvent(string memory name, string memory symbol) {
-    address clone = createClone(ticketNftImplementation);
-    ERC721Upgradeable(clone).initialize(name, symbol);
+  function createNewEvent(string memory name, uint price) public {
+    address clone = Clones.clone(ticketNftImplementation);
+    IERC721UpgradeableInitializable(clone).initialize(name, price, address(_tableland));
 
     emit EventCreated(clone);
-    
-    clonedContracts.push(clone);
+
+    clonedContracts[msg.sender].push(clone);
   }
 }
