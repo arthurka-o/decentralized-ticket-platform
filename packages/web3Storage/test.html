@@ -200,10 +200,10 @@
     }
 
 
-    async function kek256(message) {
-        const hashed = ethers.utils.id(message);
-        const firstBytes = hashHex.slice(0, 10) + "000000000000000000000000000000000000000000000000000000000000000";
-        return firstBytes;
+    function kek256(message) {
+      const hashed = ethers.utils.id(message);
+      const firstBytes = hashed.slice(0, 10) + "000000000000000000000000000000000000000000000000000000000000000";
+      return firstBytes;
     }
 
     function getParamsObj(contractAddress, ticketPrice = "", func, data = "") {
