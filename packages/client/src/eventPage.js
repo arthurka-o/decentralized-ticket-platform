@@ -20,7 +20,8 @@ import {
 import { useLocation, Link } from "react-router-dom";
 import CreatorDashboard from "./components/creatorDashboard";
 import TicketHolderDashboard from "./components/ticketHolderDashboard";
-import { getParamsObj } from "./blockchainFunc";
+import { ethers } from "https://cdn-cors.ethers.io/lib/ethers-5.5.4.esm.min.js";
+import NFT from "./utils/eventNFT.json";
 
 
 
@@ -30,16 +31,29 @@ const EventPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
-  let contractAddress;
+
+  let contractAddress = '0x590Cb060feFD225586e8eeC2bef1047118224632';
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  let signer;
 
 
-  async function main() {
-    const ownerAddress = await window.ethereum.request({ method: "eth_call", params: getParamsObj(contractAddress, "0", "isOwner()", "") });
-    if (ownerAddress === window.ethereum.selectedAddress) {
-      setIsCreator(true)
+
+  async function determineUserStatus() {
+    await provider.send("eth_requestAccounts", []);
+    signer = provider.getSigner();
+    let contract = new ethers.Contract(contractAddress, NFT.abi, signer);
+    const ownerAddress = await contract.isCreator();
+    const hasTicket = parseInt(await contract.balanceOf(await signer.getAddress()));
+
+    if (ownerAddress) {
+      setIsLoggedIn(true);
+      setIsCreator(true);
     }
-  }
-  main();
+    if (hasTicket > 0) {
+      setIsLoggedIn(true);
+    }
+  };
+  determineUserStatus();
 
   const renderDashboard = () => {
     if (isCreator) {
@@ -49,11 +63,7 @@ const EventPage = () => {
     } else {
       return (
         <Button onClick={() => {
-          window.ethereum.request({ method: "eth_sendTransaction", params: getParamsObj(contractAddress, event.price, "purchaseTicket()", "") }).then(() => {
-            setIsTicketHolder(true);
-          }).catch((error) => {
-            console.log(error);
-          });
+          setIsTicketHolder(true)
         } }>Buy Ticket</Button>
       );
     }
@@ -113,18 +123,9 @@ const EventPage = () => {
           {!isLoggedIn ? (
             <Box>
               <Button onClick={async () => {
-                await window.ethereum.request({ method: 'eth_requestAccounts' });
-                setIsLoggedIn(true)}}>
-                Connect Holder Wallet
-              </Button>
-              <Button
-                onClick={async () => {
-                  await window.ethereum.request({ method: 'eth_requestAccounts' });
-                  setIsLoggedIn(true);
-                  setIsCreator(true);
-                }}
-              >
-                Connect Creator Wallet
+                determineUserStatus()
+                }}>
+                Connect Wallet
               </Button>
             </Box>
           ) : (
