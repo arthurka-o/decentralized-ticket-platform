@@ -21,22 +21,23 @@ contract EventNFT is Initializable, OwnableUpgradeable, ERC721URIStorageUpgradea
   string private _metadataTable;
   uint256 private _metadataTableId;
 
-  function initialize(string memory name, uint _price, address _registery) external {
-     __ERC721_init(name, "TICKET");
+  function initialize(uint _totalSupply, uint _price, uint eventId, address _registery) external initializer {
+     __ERC721_init("EventNFT", "TICKET");
      __Ownable_init();
 
      price = _price;
+     totalSupply = _totalSupply;
      _tableland = ITablelandTables(_registery);
 
     /*
     * Stores the unique ID for the newly created table.
     */
-    _metadataTableId = _tableland.createTable(
+     _metadataTableId = _tableland.createTable(
       address(this),
       string.concat(
-        "CREATE TABLE ticket_",
-        StringsUpgradeable.toString(block.chainid),
-        " (id int, event_id int, description text, image text, name text);"
+        "CREATE TABLE event_",
+        Strings.toString(block.chainid),
+        " (id int, name text, description text, image text, total_supply int, price uint, date int);"
       )
     );
 
@@ -68,6 +69,9 @@ contract EventNFT is Initializable, OwnableUpgradeable, ERC721URIStorageUpgradea
 
     _tokenIds.increment();
   }
+
+  // list of owners of tickets
+  // owner of the event
 
   event TicketBought(address, uint);
 }

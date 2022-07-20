@@ -3,13 +3,19 @@ pragma solidity ^0.8.12;
 
 import "./Interfaces/IERC721UpgradeableInitializable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "./EventNFT.sol";
 import "@tableland/evm/contracts/ITablelandTables.sol";
 
 contract Factory {
-  address public ticketNftImplementation;
-  mapping(address => address[]) public clonedContracts;
+  using Counters for Counters.Counter;
+
+  address private ticketNftImplementation;
+  mapping(address => address[]) private _clonedContractsByAddress;
+  address[] private _clonedContracts;
+
+  Counters.Counter private _eventIds;
 
   ITablelandTables private _tableland;
   string private _metadataTable;
@@ -30,7 +36,7 @@ contract Factory {
       string.concat(
         "CREATE TABLE event_",
         Strings.toString(block.chainid),
-        " (id int, description text, image text, name text);"
+        " (id int, name text, description text, image text, total_supply int, price uint, date int);"
       )
     );
 
@@ -46,12 +52,40 @@ contract Factory {
     );
   }
 
-  function createNewEvent(string memory name, uint price) public {
+  function createNewEvent(uint _totalSupply, uint _price) public returns(address clone) {
     address clone = Clones.clone(ticketNftImplementation);
-    IERC721UpgradeableInitializable(clone).initialize(name, price, address(_tableland));
+    IERC721UpgradeableInitializable(clone).initialize(_totalSupply, _price, address(_tableland));
+    
+    // write to table with eventId
+    _tableland.runSQL(
+      address(this),
+      _metadataTableId,
+      string.concat(
+        "INSERT INTO ",
+        _metadataTable,
+        " (id, total_supply, price) VALUES (",
+        Strings.toString(_eventIds.current()),
+        ", ",
+        Strings.toString(_totalSupply),
+        ", ",
+        Strings.toString(_price),
+        ")"
+      )
+    );
+
+    _eventIds.increment();
 
     emit EventCreated(clone);
 
-    clonedContracts[msg.sender].push(clone);
+    _clonedContractsByAddress[msg.sender].push(clone);
+    _clonedContracts.push(clone);
+  }
+
+  funciton allEvents() view external returns(address[]) {
+    return _clonedContracts;
+  }
+
+  funciton allEvents(address _owner) view external returns(address[]) {
+    return _clonedContractsByAddress[_owner];
   }
 }
