@@ -32,7 +32,7 @@ const EventPage = () => {
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
 
-  let contractAddress = '0x590Cb060feFD225586e8eeC2bef1047118224632';
+  let contractAddress = '0x1D6aa1eeBe459E78ab4AD4Ea01C80B1bd946E255';
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   let signer;
 
@@ -46,14 +46,25 @@ const EventPage = () => {
     const hasTicket = parseInt(await contract.balanceOf(await signer.getAddress()));
 
     if (ownerAddress) {
-      setIsLoggedIn(true);
       setIsCreator(true);
     }
     if (hasTicket > 0) {
-      setIsLoggedIn(true);
+      setIsTicketHolder(true);
     }
+
+    setIsLoggedIn(true);
   };
-  determineUserStatus();
+
+  async function buyTicket() {
+    let contract = new ethers.Contract(contractAddress, NFT.abi, signer);
+    signer = provider.getSigner();
+    const withSigner = contract.connect(signer);
+    await withSigner.buyTicket({ value: ethers.utils.parseEther(event.price.toString()) });
+    if (contract.balanceOf(await contract.balanceOf(await signer.getAddress())) > 1){
+      return true;
+    } else { return false };
+  }
+
 
   const renderDashboard = () => {
     if (isCreator) {
@@ -63,7 +74,10 @@ const EventPage = () => {
     } else {
       return (
         <Button onClick={() => {
-          setIsTicketHolder(true)
+          const isTicketBought = buyTicket();
+          if (isTicketBought) {
+            setIsTicketHolder(true)
+          }
         } }>Buy Ticket</Button>
       );
     }
@@ -122,8 +136,9 @@ const EventPage = () => {
         <Flex direction="row" justifyContent="flex-end" w="100%">
           {!isLoggedIn ? (
             <Box>
-              <Button onClick={async () => {
+              <Button onClick={() => {
                 determineUserStatus()
+                console.log("here")
                 }}>
                 Connect Wallet
               </Button>
