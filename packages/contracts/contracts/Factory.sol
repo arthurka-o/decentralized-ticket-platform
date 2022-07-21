@@ -31,47 +31,47 @@ contract Factory {
     /*
     * Stores the unique ID for the newly created table.
     */
-    _metadataTableId = _tableland.createTable(
-      address(this),
-      string.concat(
-        "CREATE TABLE event_",
-        Strings.toString(block.chainid),
-        " (id int, name text, description text, image text, total_supply int, price uint, date int);"
-      )
-    );
+    // _metadataTableId = _tableland.createTable(
+    //   address(this),
+    //   string.concat(
+    //     "CREATE TABLE event_",
+    //     Strings.toString(block.chainid),
+    //     " (id int, name text, description text, image text, total_supply int, price uint, date int);"
+    //   )
+    // );
 
     /*
     * Stores the full tablename for the new table. 
     * {prefix}_{chainid}_{tableid}
     */
-    _metadataTable = string.concat(
-      "event_",
-      Strings.toString(block.chainid),
-      "_",
-      Strings.toString(_metadataTableId)
-    );
+    // _metadataTable = string.concat(
+    //   "event_",
+    //   Strings.toString(block.chainid),
+    //   "_",
+    //   Strings.toString(_metadataTableId)
+    // );
   }
 
-  function createNewEvent(uint _totalSupply, uint _price) public returns(address clone) {
-    address clone = Clones.clone(ticketNftImplementation);
+  function createEvent(uint _totalSupply, uint _price) public returns(address clone) {
+    clone = Clones.clone(ticketNftImplementation);
     IERC721UpgradeableInitializable(clone).initialize(_totalSupply, _price, address(_tableland));
     
     // write to table with eventId
-    _tableland.runSQL(
-      address(this),
-      _metadataTableId,
-      string.concat(
-        "INSERT INTO ",
-        _metadataTable,
-        " (id, total_supply, price) VALUES (",
-        Strings.toString(_eventIds.current()),
-        ", ",
-        Strings.toString(_totalSupply),
-        ", ",
-        Strings.toString(_price),
-        ")"
-      )
-    );
+    // _tableland.runSQL(
+    //   address(this),
+    //   _metadataTableId,
+    //   string.concat(
+    //     "INSERT INTO ",
+    //     _metadataTable,
+    //     " (id, total_supply, price) VALUES (",
+    //     Strings.toString(_eventIds.current()),
+    //     ", ",
+    //     Strings.toString(_totalSupply),
+    //     ", ",
+    //     Strings.toString(_price),
+    //     ")"
+    //   )
+    // );
 
     _eventIds.increment();
 
@@ -81,11 +81,11 @@ contract Factory {
     _clonedContracts.push(clone);
   }
 
-  funciton allEvents() view external returns(address[]) {
+  function allEvents() view external returns(address[] memory) {
     return _clonedContracts;
   }
 
-  funciton allEvents(address _owner) view external returns(address[]) {
+  function allEvents(address _owner) view external returns(address[] memory) {
     return _clonedContractsByAddress[_owner];
   }
 }
