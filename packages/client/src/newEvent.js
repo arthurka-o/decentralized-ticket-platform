@@ -55,9 +55,8 @@ const NewEvent = () => {
 
     const price = ethers.utils.parseUnits(formInput.price, "ether");
 
-    let contract = new ethers.Contract(factoryAddress, Factory, signer);
-    let transaction = await contract.createEvent(formInput.supply, price);
-    await transaction.wait();
+    let contract = new ethers.Contract(factoryAddress, Factory.abi, signer);
+    await contract.createEvent(formInput.supply, price);
   };
 
   return (
