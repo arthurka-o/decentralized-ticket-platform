@@ -20,9 +20,7 @@ import {
 import { useLocation, Link } from "react-router-dom";
 import CreatorDashboard from "./components/creatorDashboard";
 import TicketHolderDashboard from "./components/ticketHolderDashboard";
-import { ethers } from "https://cdn-cors.ethers.io/lib/ethers-5.5.4.esm.min.js";
-import NFT from "./utils/eventNFT.json";
-
+import { getEventContractAddress, determineUserStatus, buyTicket } from "./ethersContracts.js"
 
 
 const EventPage = () => {
@@ -32,38 +30,9 @@ const EventPage = () => {
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
 
-  let contractAddress = '0x1D6aa1eeBe459E78ab4AD4Ea01C80B1bd946E255';
+  const contractAddress = getEventContractAddress();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  let signer;
 
-
-
-  async function determineUserStatus() {
-    await provider.send("eth_requestAccounts", []);
-    signer = provider.getSigner();
-    let contract = new ethers.Contract(contractAddress, NFT.abi, signer);
-    const ownerAddress = await contract.isCreator();
-    const hasTicket = parseInt(await contract.balanceOf(await signer.getAddress()));
-
-    if (ownerAddress) {
-      setIsCreator(true);
-    }
-    if (hasTicket > 0) {
-      setIsTicketHolder(true);
-    }
-
-    setIsLoggedIn(true);
-  };
-
-  async function buyTicket() {
-    signer = provider.getSigner();
-    let contract = new ethers.Contract(contractAddress, NFT.abi, signer);
-    const withSigner = contract.connect(signer);
-    await withSigner.buyTicket({ value: ethers.utils.parseEther(event.price.toString()) });
-    if (contract.balanceOf(await contract.balanceOf(await signer.getAddress())) > 1){
-      return true;
-    } else { return false };
-  }
 
 
   const renderDashboard = () => {
@@ -74,7 +43,7 @@ const EventPage = () => {
     } else {
       return (
         <Button onClick={() => {
-          const isTicketBought = buyTicket();
+          const isTicketBought = buyTicket(event.price);
           if (isTicketBought) {
             setIsTicketHolder(true)
           }
