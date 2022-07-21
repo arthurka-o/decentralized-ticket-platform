@@ -13,6 +13,10 @@ import {
   InputGroup,
 } from "@chakra-ui/react";
 import { create as ipfsHttpClient } from "ipfs-http-client";
+import Web3Modal from 'web3modal';
+import { ethers } from "ethers";
+import { factoryAddress, nftAddress } from "./config/config";
+import Factory from "../src/abis/factoryABI.json";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -42,6 +46,22 @@ const NewEvent = () => {
       console.log(e);
     }
   }
+
+  const createEvent = async () => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const price = ethers.utils.parseUnits(formInput.price, "ether");
+
+    let contract = new ethers.Contract(factoryAddress, Factory, signer);
+    let transaction = await contract.createEvent(formInput.supply, price);
+    let tx = await transaction.wait()
+
+    let events = tx.events;
+    console.log(events);
+    }
 
   return (
     <Container>
@@ -101,7 +121,7 @@ const NewEvent = () => {
       <Input type="file" name="Asset" onChange={onChange} />
       {fileUrl && <Image src={fileUrl} maxW="250px" />}
       <Box textAlign="center" mt={10}>
-        <Button size="lg" colorScheme="blue">Create Event</Button>
+        <Button size="lg" colorScheme="blue" onClick={createEvent}>Create Event</Button>
       </Box>
     </Container>
   );
