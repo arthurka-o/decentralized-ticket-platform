@@ -16,7 +16,7 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 import Web3Modal from 'web3modal';
 import { ethers } from "ethers";
 import { factoryAddress, nftAddress } from "./config/config";
-import Factory from "../src/abis/factoryABI.json";
+import Factory from "../src/abis/Factory.json";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
