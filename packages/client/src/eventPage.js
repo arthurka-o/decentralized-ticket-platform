@@ -56,8 +56,8 @@ const EventPage = () => {
   };
 
   async function buyTicket() {
-    let contract = new ethers.Contract(contractAddress, NFT.abi, signer);
     signer = provider.getSigner();
+    let contract = new ethers.Contract(contractAddress, NFT.abi, signer);
     const withSigner = contract.connect(signer);
     await withSigner.buyTicket({ value: ethers.utils.parseEther(event.price.toString()) });
     if (contract.balanceOf(await contract.balanceOf(await signer.getAddress())) > 1){
