@@ -42,7 +42,11 @@ contract Factory {
     return _clonedContracts;
   }
 
-  function allEventsByAddress(address _owner) view external returns(address[] memory) {
-    return _clonedContractsByAddress[_owner];
-  }
+  function allEventsByOwner(address _owner)
+        external
+        view
+        returns (address[] memory)
+    {
+        return _clonedContractsByAddress[_owner];
+    }
 }
