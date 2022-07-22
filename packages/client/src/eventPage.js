@@ -20,6 +20,8 @@ import {
 import { useLocation, Link } from "react-router-dom";
 import CreatorDashboard from "./components/creatorDashboard";
 import TicketHolderDashboard from "./components/ticketHolderDashboard";
+import { getEventContractAddress, determineUserStatus, buyTicket } from "./ethersContracts.js"
+
 
 const EventPage = () => {
   const location = useLocation();
@@ -28,6 +30,11 @@ const EventPage = () => {
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
 
+  const contractAddress = getEventContractAddress();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+
+
   const renderDashboard = () => {
     if (isCreator) {
       return <CreatorDashboard />;
@@ -35,7 +42,12 @@ const EventPage = () => {
       return <TicketHolderDashboard />;
     } else {
       return (
-        <Button onClick={() => setIsTicketHolder(true)}>Buy Ticket</Button>
+        <Button onClick={() => {
+          const isTicketBought = buyTicket(event.price);
+          if (isTicketBought) {
+            setIsTicketHolder(true)
+          }
+        } }>Buy Ticket</Button>
       );
     }
   };
@@ -93,16 +105,11 @@ const EventPage = () => {
         <Flex direction="row" justifyContent="flex-end" w="100%">
           {!isLoggedIn ? (
             <Box>
-              <Button onClick={() => setIsLoggedIn(true)}>
-                Connect Holder Wallet
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsLoggedIn(true);
-                  setIsCreator(true);
-                }}
-              >
-                Connect Creator Wallet
+              <Button onClick={() => {
+                determineUserStatus()
+                console.log("here")
+                }}>
+                Connect Wallet
               </Button>
             </Box>
           ) : (
