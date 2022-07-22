@@ -7,19 +7,20 @@
 const hre = require("hardhat");
 
 async function main() {
+  const tablelandMumbaiAddress = '0x4b48841d4b32C4650E4ABc117A03FE8B51f38F68';
   const EventNFT = await hre.ethers.getContractFactory("EventNFT")
   const Factory = await hre.ethers.getContractFactory("Factory")
 
   const eventNFT = await EventNFT.deploy();
   await eventNFT.deployed()
 
-  const factory = await Factory.deploy(eventNFT.address, eventNFT.address)
+  const factory = await Factory.deploy(eventNFT.address, tablelandMumbaiAddress)
   await factory.deployed()
 
   console.log(`Factory address: ${factory.address}`)
   console.log(`EventNFT implementation address: ${eventNFT.address}`)
 
-  const price = hre.ethers.utils.parseEther("10");
+  const price = hre.ethers.utils.parseEther("5");
 
   const testEventAddress = await factory.createEvent(10, price);
 

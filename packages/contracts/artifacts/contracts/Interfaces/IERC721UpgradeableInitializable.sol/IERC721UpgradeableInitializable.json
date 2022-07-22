@@ -150,6 +150,11 @@
           "internalType": "address",
           "name": "_registery",
           "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_creator",
+          "type": "address"
         }
       ],
       "name": "initialize",
