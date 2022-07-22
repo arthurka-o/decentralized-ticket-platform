@@ -33,21 +33,23 @@ const EventPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
-  const [eventAddress, setEventAddress] = useState("");
+  const [eventAddress, setEventAddress] = useState("0x160beBc818C2F5Fb10Ed9bA8f0593D53445fC386");
 
   let pathName = useLocation().pathname;
   const pathNumber = parseInt(/[0-9]+/.exec(pathName)[0]);
 
-  useEffect(() => {
-    getEventContractAddress();
-  }, []);
+  // useEffect(() => {
+  //   getEventContractAddress();
+  // }, []);
 
-  async function getEventContractAddress() {
-    const provider = new ethers.providers.JsonRpcProvider();
-    const contract = new ethers.Contract(factoryAddress, Factory.abi, provider);
-    const arrayOfContracts = await contract.allEvents();
-    setEventAddress(arrayOfContracts[arrayOfContracts.length -1]);
-  }
+  // async function getEventContractAddress() {
+  //   const web3Modal = new Web3Modal();
+  //   const connection = await web3Modal.connect();
+  //   const provider = new ethers.providers.Web3Provider(connection);
+  //   const contract = new ethers.Contract(factoryAddress, Factory.abi, provider);
+  //   const arrayOfContracts = await contract.allEvents();
+  //   setEventAddress(arrayOfContracts[arrayOfContracts.length -1]);
+  // }
   
   async function determineUserStatus() {
     const web3Modal = new Web3Modal();

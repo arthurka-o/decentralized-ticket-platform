@@ -5,7 +5,7 @@ const TicketHolderDashboard = () => {
     <Box textAlign="center">
       <Heading>Ticket Holder Dashboard</Heading>
       <Text>Latest Updates:</Text>
-      <Text>Amount of tickets owned: 1</Text>
+      <Text>Amount of tickets owned: </Text>
       <Button>Message Organiser</Button>
     </Box>
   );
