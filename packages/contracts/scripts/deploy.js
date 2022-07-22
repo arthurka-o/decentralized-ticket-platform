@@ -7,18 +7,25 @@
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const EventNFT = await hre.ethers.getContractFactory("EventNFT")
+  const Factory = await hre.ethers.getContractFactory("Factory")
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+  const eventNFT = await EventNFT.deploy();
+  await eventNFT.deployed()
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const factory = await Factory.deploy(eventNFT.address, eventNFT.address)
+  await factory.deployed()
 
-  await lock.deployed();
+  console.log(`Factory address: ${factory.address}`)
+  console.log(`EventNFT implementation address: ${eventNFT.address}`)
 
-  console.log("Lock with 1 ETH deployed to:", lock.address);
+  const price = hre.ethers.utils.parseEther("10");
+
+  const testEventAddress = await factory.createEvent(10, price);
+
+  console.log(`EventNFT proxy address: ${testEventAddress}`)
+
+  const testEvent = EventNFT.attach(testEventAddress);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
