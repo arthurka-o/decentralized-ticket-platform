@@ -20,7 +20,11 @@ import {
 import { useLocation, Link } from "react-router-dom";
 import CreatorDashboard from "./components/creatorDashboard";
 import TicketHolderDashboard from "./components/ticketHolderDashboard";
-import { getEventContractAddress, determineUserStatus, buyTicket } from "./ethersContracts.js"
+import { ethers } from "ethers";
+import Web3Modal from "web3modal";
+import NFT from "./abis/testEventNFT.json";
+import FACTORY from "./abis/Factory.json";
+
 
 
 const EventPage = () => {
@@ -30,9 +34,64 @@ const EventPage = () => {
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
 
+  let pathName = useLocation().pathname;
   const contractAddress = getEventContractAddress();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
 
+
+  console.log(pathName);
+
+  async function getEventContractAddress() {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const pathNumber = parseInt(/[0-9]+/.exec(pathName)[0]);
+    const factoryAddress = "0x4b964dCe7D75c995dc873daEF1fd7E413B8C88A8";
+    const contract = new ethers.Contract(factoryAddress, FACTORY.abi, provider);
+    console.log(contract);
+    const arrayOfContracts = await contract.allEvents();
+
+    return arrayOfContracts[pathNumber - 1];
+
+  }
+
+  //console.log(getEventContractAddress());
+
+  async function determineUserStatus() {
+
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    let contract = new ethers.Contract(contractAddress(), NFT.abi, signer);
+    const ownerAddress = await contract.isCreator();
+    const hasTicket = parseInt(await contract.balanceOf(await signer.getAddress()));
+
+    if (ownerAddress) {
+      setIsCreator(true);
+    }
+    if (hasTicket > 0) {
+      setIsTicketHolder(true);
+    }
+
+    setIsLoggedIn(true);
+  };
+
+  async function buyTicket(price) {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    let contract = new ethers.Contract(contractAddress, NFT.abi, signer);
+    const withSigner = contract.connect(signer);
+    await withSigner.buyTicket({ value: ethers.utils.parseEther(price.toString()) });
+    if (contract.balanceOf(await contract.balanceOf(await signer.getAddress())) > 1){
+      return true;
+    } else { return false };
+  }
 
 
   const renderDashboard = () => {
