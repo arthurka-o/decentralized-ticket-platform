@@ -17,17 +17,19 @@ contract EventNFT is Initializable, OwnableUpgradeable, ERC721URIStorageUpgradea
   string private constant _baseURIString = "https://testnet.tableland.network/query?s=";
   uint public price;
   uint public totalSupply;
+  address public creator;
 
   ITablelandTables private _tableland;
   string private _metadataTable;
   uint256 private _metadataTableId;
 
-  function initialize(uint _totalSupply, uint _price, address _registery) external initializer {
+  function initialize(uint _totalSupply, uint _price, address _registery, address _creator) external initializer {
      __ERC721_init("EventNFT", "TICKET");
      __Ownable_init();
 
      price = _price;
      totalSupply = _totalSupply;
+     creator = _creator;
      _tableland = ITablelandTables(_registery);
 
     /*
