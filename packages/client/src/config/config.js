@@ -1,2 +1,2 @@
-export const factoryAddress = "0x4b964dCe7D75c995dc873daEF1fd7E413B8C88A8"
-export const nftAddress = "0xfb038CCB692376aA9A885Fb9875651bC25F76969"
+export const factoryAddress = "0xeB9d0Ca6E3Bb34bFFF07A2B80F2Ddc81A5CbC810"
+export const nftAddress = "0x160beBc818C2F5Fb10Ed9bA8f0593D53445fC386"
