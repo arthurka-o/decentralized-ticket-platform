@@ -32,7 +32,6 @@ const EventPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
-  const [eventAddress, setEventAddress] = useState("");
   const [metadata, setMetadata] = useState("");
   const [creator, setCreator] = useState("");
   const { event } = useParams();
@@ -41,7 +40,6 @@ const EventPage = () => {
   const pathNumber = parseInt(/[0-9]+/.exec(pathName)[0]);
 
   useEffect(() => {
-    setEventAddress(event);
     getEventData();
   }, []);
 
@@ -58,7 +56,8 @@ const EventPage = () => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
-    const contract = new ethers.Contract(eventAddress, EventNFT.abi, provider);
+    console.log(event);
+    const contract = new ethers.Contract(event, EventNFT.abi, provider);
     const creatorAddress = await contract.creator();
     const user = await provider.getSigner().getAddress();
     setCreator(creatorAddress);
@@ -81,7 +80,7 @@ const EventPage = () => {
     const signer = provider.getSigner();
     const user = await signer.getAddress();
 
-    let contract = new ethers.Contract(eventAddress, EventNFT.abi, signer);
+    let contract = new ethers.Contract(event, EventNFT.abi, signer);
     const hasTicket = parseInt(
       await contract.balanceOf(await signer.getAddress())
     );
@@ -101,7 +100,7 @@ const EventPage = () => {
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
-    let contract = new ethers.Contract(eventAddress, EventNFT.abi, signer);
+    let contract = new ethers.Contract(event, EventNFT.abi, signer);
     const withSigner = contract.connect(signer);
     await withSigner.buyTicket({
       value: ethers.utils.parseEther(price.toString()),
@@ -169,7 +168,7 @@ const EventPage = () => {
               </Tr>
               <Tr>
                 <Td>NFT Contract: </Td>
-                <Td>{eventAddress}</Td>
+                <Td>{event}</Td>
               </Tr>
               <Tr whiteSpace="pre-wrap">
                 <Td>Description: </Td>
