@@ -44,6 +44,7 @@ const NewEvent = () => {
       description: formInput.description,
       supply: formInput.supply,
       price: formInput.price,
+      imgUrl: fileUrl,
     };
 
     jsonObject = new File([JSON.stringify(jsonObject)], "metadata.json", {
@@ -79,7 +80,10 @@ const NewEvent = () => {
 
     let contract = new ethers.Contract(factoryAddress, Factory.abi, signer);
     const newEvent = await contract.createEvent(formInput.supply, price, uri);
-    console.log(newEvent);
+    console.log(await newEvent.wait());
+    let latestDeployedContract = await contract.allEvents();
+    latestDeployedContract = latestDeployedContract[latestDeployedContract.length - 1];
+    //const url =
   };
 
   return (
@@ -131,7 +135,7 @@ const NewEvent = () => {
       />
       <FormLabel>Ticket Price</FormLabel>
       <InputGroup>
-        <InputLeftAddon>ETH</InputLeftAddon>
+        <InputLeftAddon>MATIC</InputLeftAddon>
         <Input
           label="ETH"
           labelPosition="left"
