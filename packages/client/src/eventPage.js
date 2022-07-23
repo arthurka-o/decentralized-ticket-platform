@@ -34,13 +34,15 @@ const EventPage = () => {
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
   const [eventAddress, setEventAddress] = useState(
-    "0xC907e643d611617bF469D3016eD05776290D684c"
+    "0x4148D176C4D7ee04d0d8aA680f589D53d01632cD"
   );
   const [metadata, setMetadata] = useState("");
   const [creator, setCreator] = useState("");
 
   let pathName = useLocation().pathname;
   const pathNumber = parseInt(/[0-9]+/.exec(pathName)[0]);
+
+  console.log(event);
 
   useEffect(() => {
     getEventData();
@@ -63,7 +65,7 @@ const EventPage = () => {
     const creatorAddress = await contract.creator();
     const user = await provider.getSigner().getAddress();
     setCreator(creatorAddress);
-    if (creator == user) {
+    if (creator === user) {
       setIsCreator(true);
     }
 
@@ -104,12 +106,14 @@ const EventPage = () => {
 
     let contract = new ethers.Contract(eventAddress, EventNFT.abi, signer);
     const withSigner = contract.connect(signer);
+    console.log("Address: " + ethers.utils.getAddress("0x8BCdC99F377ce10842bc12FB9585eA20F9733E93"));
+    console.log("Signer: " + await contract.balanceOf(window.ethereum.selectedAddress));
     await withSigner.buyTicket({
       value: ethers.utils.parseEther(price.toString()),
     });
     if (
-      contract.balanceOf(await contract.balanceOf(await signer.getAddress())) >
-      1
+      await contract.balanceOf(await signer.getAddress()) >
+      0
     ) {
       return true;
     } else {
@@ -125,8 +129,8 @@ const EventPage = () => {
     } else {
       return (
         <Button
-          onClick={() => {
-            const isTicketBought = buyTicket(event.price);
+          onClick={async () => {
+            const isTicketBought = await buyTicket(metadata.price);
             if (isTicketBought) {
               setIsTicketHolder(true);
             }
