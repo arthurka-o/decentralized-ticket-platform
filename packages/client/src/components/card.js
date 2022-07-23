@@ -33,7 +33,7 @@ const Card = (props) => {
           </Text>
         </HStack>
         <Text as="h2" fontWeight="semibold" fontSize="xl" my={2}>
-          {event.name}
+          {event}
         </Text>
         <Text fontWeight="light" fontSize="md" noOfLines={3}>
           {event.description}
@@ -47,7 +47,7 @@ const Card = (props) => {
           </Badge>
         </HStack>
         <Box textAlign="center">
-          <Link to={"/events/" + event.id} state={{ event: event }}>
+          <Link to={"/events/" + event}>
             <Button mt={3} color="black" colorScheme="gray" boxShadow="md">
               Go To Event
             </Button>
