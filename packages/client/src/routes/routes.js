@@ -10,7 +10,7 @@ export default function Routing() {
       <Route exact path="/" element={<HomePage />}></Route>
       <Route path="/new" element={<NewEvent />}></Route>
       <Route path="/eventpage" element={<EventPage />}></Route>
-      <Route path="/events/:eventid" element={<EventPage />}></Route>
+      <Route path="/events/:event" element={<EventPage />}></Route>
     </Routes>
   );
 }
