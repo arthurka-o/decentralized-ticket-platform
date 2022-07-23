@@ -14,7 +14,7 @@ async function main() {
   const eventNFT = await EventNFT.deploy();
   await eventNFT.deployed()
 
-  const factory = await Factory.deploy(eventNFT.address, tablelandMumbaiAddress)
+  const factory = await Factory.deploy(eventNFT.address)
   await factory.deployed()
 
   console.log(`Factory address: ${factory.address}`)
@@ -22,8 +22,9 @@ async function main() {
 
   const price = hre.ethers.utils.parseEther("5");
 
-  const testEventAddress = await factory.createEvent(10, price);
+  const testEventAddress = await factory.createEvent(10, price, "https://bafybeihko7g3siny6e4tt3gqm5ldvbwwbtjnqnwgcutt466kw54yphpfp4.ipfs.dweb.link/metadata.json");
 
+  console.log(await testEventAddress.wait());
   console.log(`EventNFT proxy address: ${testEventAddress}`)
 
   const testEvent = EventNFT.attach(testEventAddress);

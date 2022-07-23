@@ -50,17 +50,17 @@ const EventPage = () => {
   //   const arrayOfContracts = await contract.allEvents();
   //   setEventAddress(arrayOfContracts[arrayOfContracts.length -1]);
   // }
-  
+
   async function determineUserStatus() {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
-  
+
     let contract = new ethers.Contract(eventAddress, EventNFT.abi, signer);
     const ownerAddress = await contract.creator();
     const hasTicket = parseInt(await contract.balanceOf(await signer.getAddress()));
-  
+
     if (ownerAddress == signer.getAddress()) {
       setIsCreator(true);
     }
@@ -69,13 +69,13 @@ const EventPage = () => {
     }
     setIsLoggedIn(true);
   };
-  
+
   async function buyTicket(price) {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
-  
+
     let contract = new ethers.Contract(eventAddress, EventNFT.abi, signer);
     const withSigner = contract.connect(signer);
     await withSigner.buyTicket({ value: ethers.utils.parseEther(price.toString()) });
