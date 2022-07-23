@@ -26,18 +26,15 @@ import Factory from "./abis/Factory.json";
 import { factoryAddress } from "./config/config";
 import { ethers } from "ethers";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const EventPage = () => {
-  const location = useLocation();
-  const { event } = location.state;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [isTicketHolder, setIsTicketHolder] = useState(false);
-  const [eventAddress, setEventAddress] = useState(
-    "0x4148D176C4D7ee04d0d8aA680f589D53d01632cD"
-  );
   const [metadata, setMetadata] = useState("");
   const [creator, setCreator] = useState("");
+  const { event } = useParams();
 
   let pathName = useLocation().pathname;
   const pathNumber = parseInt(/[0-9]+/.exec(pathName)[0]);
@@ -45,6 +42,7 @@ const EventPage = () => {
   console.log(event);
 
   useEffect(() => {
+    setEventAddress(event);
     getEventData();
   }, []);
 
@@ -74,7 +72,7 @@ const EventPage = () => {
       ipfsLink.replace("ipfs://", "https://ipfs.io/ipfs/") + "/metadata.json";
     const data = await axios.get(httplink);
     setMetadata(data.data);
-    console.log(isCreator);
+    console.log(data);
   }
 
   async function determineUserStatus() {
