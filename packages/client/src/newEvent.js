@@ -17,6 +17,7 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { factoryAddress, nftAddress } from "./config/config";
 import Factory from "../src/abis/Factory.json";
+require('dotenv').config()
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -31,6 +32,8 @@ const NewEvent = () => {
     price: "",
     supply: "",
   });
+
+
 
   async function onChange(e) {
     const file = e.target.files[0];
