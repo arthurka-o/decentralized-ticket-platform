@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Heading, Button, Text, TableContainer, Table, Thead, Tbody, Th, Tr, Td } from "@chakra-ui/react";
 
-const CreatorDashboard = () => {
+const CreatorDashboard = (dashboardData) => {
   return <Box mt={5} textAlign="center">
     <Heading>Creator Dashboard</Heading>
     <TableContainer>
@@ -14,15 +14,19 @@ const CreatorDashboard = () => {
             <Tbody>
                 <Tr>
                     <Td>Tickets Sold: </Td>
-                    <Td>5000</Td>
+                    <Td>{dashboardData[0]}</Td>
                 </Tr>
                 <Tr>
                     <Td>Tickets Available: </Td>
-                    <Td>4337</Td>
+                    <Td>{dashboardData[1]}</Td>
                 </Tr>
                 <Tr>
-                    <Td>Total Earnings: </Td>
-                    <Td>50000</Td>
+                    <Td>Total Earnings (in Matic): </Td>
+                    <Td>{dashboardData[2]}</Td>
+                </Tr>
+                <Tr>
+                    <Td>All Ticket Owner Addresses: </Td>
+
                 </Tr>
             </Tbody>
         </Table>
