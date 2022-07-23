@@ -17,8 +17,7 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { factoryAddress, nftAddress } from "./config/config";
 import Factory from "../src/abis/Factory.json";
-import { NFTStorage } from 'nft.storage'
-
+import { NFTStorage } from "nft.storage";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -35,18 +34,21 @@ const NewEvent = () => {
   });
 
   async function metadataNFT() {
-    const NFT_STORAGE_TOKEN = process.env.REACT_APP_NFT_STORAGE_KEY;
+    const NFT_STORAGE_TOKEN =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGM4ZkIzMjREYmRBM0E3ZEI4NzcxNWZiODMwQzcwN0Q1OUU5RGZCREEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1ODU3Mzc3NjU2NiwibmFtZSI6IlRpY2tldFBsYXRmb3JtIn0.VbIeku0jvn2FnjuqGBvAImyp5ziQt4duXUgA4kDhTpA";
     const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
     let jsonObject = {
-                        name: formInput.name,
-                        datetime: formInput.datetime,
-                        city: formInput.city,
-                        description: formInput.description,
-                        supply: formInput.supply,
-                        price: formInput.price
-                      };
+      name: formInput.name,
+      datetime: formInput.datetime,
+      city: formInput.city,
+      description: formInput.description,
+      supply: formInput.supply,
+      price: formInput.price,
+    };
 
-    jsonObject = new File([JSON.stringify(jsonObject)], 'metadata.json', { type: 'text/json' });
+    jsonObject = new File([JSON.stringify(jsonObject)], "metadata.json", {
+      type: "text/json",
+    });
 
     const metadata = await client.storeDirectory([jsonObject]);
     return metadata;
@@ -76,7 +78,8 @@ const NewEvent = () => {
     const price = ethers.utils.parseUnits(formInput.price, "ether");
 
     let contract = new ethers.Contract(factoryAddress, Factory.abi, signer);
-    await contract.createEvent(formInput.supply, price, uri);
+    const newEvent = await contract.createEvent(formInput.supply, price, uri);
+    console.log(newEvent);
   };
 
   return (
@@ -143,11 +146,14 @@ const NewEvent = () => {
       <Input type="file" name="Asset" onChange={onChange} />
       {fileUrl && <Image src={fileUrl} maxW="250px" />}
       <Box textAlign="center" mt={10}>
-        <Button size="lg" colorScheme="blue" onClick={async () => {
-          const metadata = await metadataNFT();
-          createEvent("ipfs://" + metadata);
-        }
-          }>
+        <Button
+          size="lg"
+          colorScheme="blue"
+          onClick={async () => {
+            const metadata = await metadataNFT();
+            createEvent("ipfs://" + metadata);
+          }}
+        >
           Create Event
         </Button>
       </Box>
