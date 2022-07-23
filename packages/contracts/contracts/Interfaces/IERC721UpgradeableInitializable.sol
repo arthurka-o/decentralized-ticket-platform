@@ -8,8 +8,7 @@ interface IERC721UpgradeableInitializable is IERC721Upgradeable {
     function initialize(
         uint256 _totalSupply,
         uint256 _price,
-        address _registery,
-        address _creator
+        address _creator,
+        string memory _uri
     ) external;
 }
-
