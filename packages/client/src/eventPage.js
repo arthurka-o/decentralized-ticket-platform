@@ -42,7 +42,6 @@ const EventPage = () => {
   console.log(event);
 
   useEffect(() => {
-    setEventAddress(event);
     getEventData();
   }, []);
 
@@ -59,7 +58,8 @@ const EventPage = () => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
-    const contract = new ethers.Contract(eventAddress, EventNFT.abi, provider);
+    console.log(event);
+    const contract = new ethers.Contract(event, EventNFT.abi, provider);
     const creatorAddress = await contract.creator();
     const user = await provider.getSigner().getAddress();
     setCreator(creatorAddress);
@@ -82,7 +82,7 @@ const EventPage = () => {
     const signer = provider.getSigner();
     const user = await signer.getAddress();
 
-    let contract = new ethers.Contract(eventAddress, EventNFT.abi, signer);
+    let contract = new ethers.Contract(event, EventNFT.abi, signer);
     const hasTicket = parseInt(
       await contract.balanceOf(await signer.getAddress())
     );
@@ -102,7 +102,7 @@ const EventPage = () => {
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
-    let contract = new ethers.Contract(eventAddress, EventNFT.abi, signer);
+    let contract = new ethers.Contract(event, EventNFT.abi, signer);
     const withSigner = contract.connect(signer);
     console.log("Address: " + ethers.utils.getAddress("0x8BCdC99F377ce10842bc12FB9585eA20F9733E93"));
     console.log("Signer: " + await contract.balanceOf(window.ethereum.selectedAddress));
@@ -172,7 +172,7 @@ const EventPage = () => {
               </Tr>
               <Tr>
                 <Td>NFT Contract: </Td>
-                <Td>{eventAddress}</Td>
+                <Td>{event}</Td>
               </Tr>
               <Tr whiteSpace="pre-wrap">
                 <Td>Description: </Td>
