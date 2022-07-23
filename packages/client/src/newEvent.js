@@ -17,7 +17,8 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { factoryAddress, nftAddress } from "./config/config";
 import Factory from "../src/abis/Factory.json";
-require('dotenv').config()
+import { NFTStorage } from 'nft.storage'
+require('dotenv').config();
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -33,7 +34,19 @@ const NewEvent = () => {
     supply: "",
   });
 
-
+  async function metadataNFT() {
+    const NFT_STORAGE_TOKEN = process.env.PRIVATE_KEY;
+    const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+    const metadata = await client.store({
+      name: formInput.name,
+      datetime: formInput.datetime,
+      city: formInput.city,
+      description: formInput.description,
+      supply: formInput.supply,
+      price: formInput.price
+    })
+    return
+  }
 
   async function onChange(e) {
     const file = e.target.files[0];
@@ -50,7 +63,7 @@ const NewEvent = () => {
     }
   }
 
-  const createEvent = async () => {
+  const createEvent = async (uri) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -59,7 +72,7 @@ const NewEvent = () => {
     const price = ethers.utils.parseUnits(formInput.price, "ether");
 
     let contract = new ethers.Contract(factoryAddress, Factory.abi, signer);
-    await contract.createEvent(formInput.supply, price);
+    await contract.createEvent(formInput.supply, price, uri);
   };
 
   return (
@@ -126,7 +139,11 @@ const NewEvent = () => {
       <Input type="file" name="Asset" onChange={onChange} />
       {fileUrl && <Image src={fileUrl} maxW="250px" />}
       <Box textAlign="center" mt={10}>
-        <Button size="lg" colorScheme="blue" onClick={createEvent}>
+        <Button size="lg" colorScheme="blue" onClick={() => {
+          const metadata = metadataNFT();
+          createEvent(metadata.url);
+        }
+          }>
           Create Event
         </Button>
       </Box>
