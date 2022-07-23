@@ -68,6 +68,7 @@ const EventPage = () => {
       setIsTicketHolder(true);
     }
     setIsLoggedIn(true);
+    console.log(ownerAddress);
   };
   
   async function buyTicket(price) {
