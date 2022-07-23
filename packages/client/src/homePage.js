@@ -5,7 +5,9 @@ import Card from "./components/card";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import Factory from "../src/abis/Factory.json";
+import EventNFT from "../src/abis/EventNFT.json";
 import { factoryAddress } from "./config/config";
+import axios from "axios";
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
@@ -18,10 +20,30 @@ const HomePage = () => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
-    const contract = new ethers.Contract(factoryAddress, Factory.abi, provider);
-    const data = await contract.allEvents();
-    console.log(data);
-    setEvents(data);
+    const factoryContract = new ethers.Contract(
+      factoryAddress,
+      Factory.abi,
+      provider
+    );
+    const data = await factoryContract.allEvents();
+
+    const items = await Promise.all(
+      data.map(async (event) => {
+        let nftContract = new ethers.Contract(event, EventNFT.abi, provider);
+        let ipfsLink = await nftContract.metadataUri();
+        let httplink = ipfsLink.replace("ipfs://", "https://ipfs.io/ipfs/");
+        console.log(httplink);
+        let metadata = await axios.get(httplink);
+        console.log(metadata);
+        let item = {
+          name: metadata.name,
+          datetime: metadata.datetime,
+        };
+        return item;
+      })
+    );
+    setEvents(items);
+    console.log(events);
   }
 
   const renderEvents = () => {

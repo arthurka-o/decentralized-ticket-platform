@@ -33,7 +33,7 @@ const Card = (props) => {
           </Text>
         </HStack>
         <Text as="h2" fontWeight="semibold" fontSize="xl" my={2}>
-          {event}
+          {event.name}
         </Text>
         <Text fontWeight="light" fontSize="md" noOfLines={3}>
           {event.description}
