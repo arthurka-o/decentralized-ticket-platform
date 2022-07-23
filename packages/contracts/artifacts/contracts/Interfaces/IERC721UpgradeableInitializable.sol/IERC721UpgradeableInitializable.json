@@ -148,13 +148,13 @@
         },
         {
           "internalType": "address",
-          "name": "_registery",
+          "name": "_creator",
           "type": "address"
         },
         {
-          "internalType": "address",
-          "name": "_creator",
-          "type": "address"
+          "internalType": "string",
+          "name": "_uri",
+          "type": "string"
         }
       ],
       "name": "initialize",

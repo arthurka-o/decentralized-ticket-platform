@@ -14,30 +14,35 @@ contract EventNFT is Initializable, OwnableUpgradeable, ERC721URIStorageUpgradea
   using CountersUpgradeable for CountersUpgradeable.Counter;
 
   CountersUpgradeable.Counter private _tokenIds;
-  address public constant usdcAddress = 0xe11A86849d99F524cAC3E7A0Ec1241828e332C62;
+  // address public constant usdcAddress = 0xe11A86849d99F524cAC3E7A0Ec1241828e332C62;
   string private constant _firstURIString = "https://testnet.tableland.network/query?mode=list&s=SELECT+json_object%28%27id%27%2C+id%2C+%27name%27%2C+name%2C+%27description%27%2C+description%2C+%27image%27%2C+image%2C+%27total_supply%27%2C+total_supply%2C+%27price%27%2C+price%2C+%27date%27%2C+date%29+FROM+";
   string private constant _secondURIString = "+WHERE+id%3D1";
 
   uint public price;
   uint public totalSupply;
   address public creator;
+  string public metadataUri;
+  address[] public ticketHolders;
 
   ITablelandTables private _tableland;
   string private _metadataTable;
   uint256 private _metadataTableId;
 
-  function initialize(uint _totalSupply, uint _price, address _registery, address _creator) external initializer {
+  function initialize(uint _totalSupply, uint _price, address _creator, string memory _metadataUri) external initializer {
      __ERC721_init("EventNFT", "TICKET");
      __Ownable_init();
 
     price = _price;
     totalSupply = _totalSupply;
-    _tableland = ITablelandTables(_registery);
+    //address registery = _registery;
+    //_tableland = ITablelandTables(_registery);
     creator = _creator;
+    metadataUri = _metadataUri;
 
     /*
     * Stores the unique ID for the newly created table.
     */
+    /*
     _metadataTableId = _tableland.createTable(
       address(this),
       string.concat(
@@ -48,16 +53,16 @@ contract EventNFT is Initializable, OwnableUpgradeable, ERC721URIStorageUpgradea
     );
 
     /*
-    * Stores the full tablename for the new table. 
+    * Stores the full tablename for the new table.
     * {prefix}_{chainid}_{tableid}
-    */
+
     _metadataTable = string.concat(
       "ticket_",
       StringsUpgradeable.toString(block.chainid),
       "_",
       StringsUpgradeable.toString(_metadataTableId)
     );
-
+    */
     // _tableland.setController(
     //   address(this),
     //   _metadataTableId,
@@ -65,19 +70,22 @@ contract EventNFT is Initializable, OwnableUpgradeable, ERC721URIStorageUpgradea
     // );
   }
 
-  function buyTicket() external {
-    IERC20 token = IERC20(usdcAddress);
+  function getTicketHolders() external view returns(address[] memory) {
+    return ticketHolders;
+  }
 
-    require(token.balanceOf(msg.sender) >= price, "Not enough USDC");
+  function buyTicket() external payable {
+    require(msg.value >= price, "Not enough Matic");
     require(_tokenIds.current() <= totalSupply, "All tickets are minted");
-    token.transferFrom(msg.sender, address(this), price);
 
     _safeMint(msg.sender, _tokenIds.current());
 
     emit TicketBought(msg.sender, _tokenIds.current());
 
     _tokenIds.increment();
+    ticketHolders.push(msg.sender);
   }
+
 
   function setMetadata(string memory _name, string memory _description, string memory _image, uint _date) external {
     /*

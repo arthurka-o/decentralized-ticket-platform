@@ -20,16 +20,16 @@ contract Factory {
 
   event EventCreated(address);
 
-  constructor(address _ticketNftAddress, address _registry) {
+  constructor(address _ticketNftAddress) {
     ticketNftImplementation = _ticketNftAddress;
 
-    _tablelandAddress = _registry;
+    //_tablelandAddress = _registry;
   }
 
-  function createEvent(uint _totalSupply, uint _price) public returns(address clone) {
+  function createEvent(uint _totalSupply, uint _price, string memory _uri) public returns(address clone) {
     clone = Clones.clone(ticketNftImplementation);
-    IERC721UpgradeableInitializable(clone).initialize(_totalSupply, _price, _tablelandAddress, msg.sender);
-  
+    IERC721UpgradeableInitializable(clone).initialize(_totalSupply, _price, msg.sender, _uri);
+
     _eventIds.increment();
 
     emit EventCreated(clone);
