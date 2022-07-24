@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Box,
   Heading,
@@ -21,6 +22,13 @@ const CreatorDashboard = (props) => {
     <Box mt={5} textAlign="center">
       <Heading>Creator Dashboard</Heading>
       <TableContainer>
+
+const CreatorDashboard = (props) => {
+  const { message, handleChange, handleMessageSent } = props;
+  return <Box mt={5} textAlign="center">
+    <Heading>Creator Dashboard</Heading>
+    <TableContainer>
+
         <Table>
           <Thead>
             <Tr>
@@ -56,6 +64,17 @@ const CreatorDashboard = (props) => {
       </Button>
     </Box>
   );
+    </TableContainer>
+    <Textarea
+      placeholder="Type your message here"
+      mt="10"
+      background="white"
+      value={message}
+      onChange={handleChange}
+    />
+    <Button size="lg" mt={3} onClick={handleMessageSent}>Message Attendees</Button>
+
+  </Box>;
 };
 
 export default CreatorDashboard;
