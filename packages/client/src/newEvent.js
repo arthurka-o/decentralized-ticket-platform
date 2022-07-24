@@ -81,7 +81,7 @@ const NewEvent = () => {
     const signer = provider.getSigner();
 
     const price = ethers.utils.parseUnits(formInput.price, "ether");
-
+    console.log(price)
     let contract = new ethers.Contract(factoryAddress, Factory.abi, signer);
     const newEvent = await contract.createEvent(formInput.supply, price, uri);
     navigate("/");

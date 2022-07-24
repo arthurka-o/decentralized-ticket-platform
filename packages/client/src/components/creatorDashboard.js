@@ -53,10 +53,6 @@ const CreatorDashboard = (props) => {
             )
         })}
       </UnorderedList>
-      <Button size="lg" mt={10}>
-        Message Attendees
-      </Button>
-
 
 
     <Textarea
