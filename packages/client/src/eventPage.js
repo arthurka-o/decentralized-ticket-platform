@@ -13,6 +13,7 @@ import {
   TableContainer,
   SimpleGrid,
   Box,
+  Image,
 } from "@chakra-ui/react";
 import CreatorDashboard from "./components/creatorDashboard";
 import TicketHolderDashboard from "./components/ticketHolderDashboard";
