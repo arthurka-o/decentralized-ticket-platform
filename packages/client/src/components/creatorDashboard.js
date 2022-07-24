@@ -11,6 +11,8 @@ import {
   Th,
   Tr,
   Td,
+  UnorderedList,
+  ListItem,
 } from "@chakra-ui/react";
 
 const CreatorDashboard = (props) => {
@@ -38,13 +40,17 @@ const CreatorDashboard = (props) => {
               <Td>Total Earnings (in Matic): </Td>
               <Td>{dashboardData.totalEarnings}</Td>
             </Tr>
-            <Tr>
-              <Td>All Ticket Owner Addresses: </Td>
-              <Td>{dashboardData.allTicketHolders}</Td>
-            </Tr>
           </Tbody>
         </Table>
       </TableContainer>
+      <Text>Ticket Owner Addresses</Text>
+      <UnorderedList>
+        {dashboardData.allTicketHolders.map((holder) => {
+            return (
+                <ListItem>{holder}</ListItem>
+            )
+        })}
+      </UnorderedList>
       <Button size="lg" mt={10}>
         Message Attendees
       </Button>
