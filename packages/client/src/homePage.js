@@ -11,8 +11,7 @@ import axios from "axios";
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
-  const [eventAddresses, setEventAddresses] = useState([]);
-
+  
   useEffect(() => {
     loadEvents();
   }, []);
