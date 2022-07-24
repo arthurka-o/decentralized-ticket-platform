@@ -18,6 +18,7 @@ import { ethers } from "ethers";
 import { factoryAddress, nftAddress } from "./config/config";
 import Factory from "../src/abis/Factory.json";
 import { NFTStorage } from "nft.storage";
+import { useNavigate } from "react-router-dom";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -32,6 +33,8 @@ const NewEvent = () => {
     price: "",
     supply: "",
   });
+  
+  const navigate = useNavigate();
 
   async function metadataNFT() {
     const NFT_STORAGE_TOKEN =
@@ -79,7 +82,7 @@ const NewEvent = () => {
 
     let contract = new ethers.Contract(factoryAddress, Factory.abi, signer);
     const newEvent = await contract.createEvent(formInput.supply, price, uri);
-    console.log(newEvent);
+    navigate("/");
   };
 
   return (
