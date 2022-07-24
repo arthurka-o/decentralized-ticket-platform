@@ -14,17 +14,11 @@ import {
   Td,
   UnorderedList,
   ListItem,
+  Textarea
 } from "@chakra-ui/react";
 
 const CreatorDashboard = (props) => {
-  const { dashboardData } = props;
-  return (
-    <Box mt={5} textAlign="center">
-      <Heading>Creator Dashboard</Heading>
-      <TableContainer>
-
-const CreatorDashboard = (props) => {
-  const { message, handleChange, handleMessageSent } = props;
+  const { message, handleChange, handleMessageSent, dashboardData } = props;
   return <Box mt={5} textAlign="center">
     <Heading>Creator Dashboard</Heading>
     <TableContainer>
@@ -62,9 +56,9 @@ const CreatorDashboard = (props) => {
       <Button size="lg" mt={10}>
         Message Attendees
       </Button>
-    </Box>
-  );
-    </TableContainer>
+
+
+
     <Textarea
       placeholder="Type your message here"
       mt="10"
@@ -72,6 +66,7 @@ const CreatorDashboard = (props) => {
       value={message}
       onChange={handleChange}
     />
+
     <Button size="lg" mt={3} onClick={handleMessageSent}>Message Attendees</Button>
 
   </Box>;

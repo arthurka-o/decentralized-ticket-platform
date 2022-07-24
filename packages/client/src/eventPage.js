@@ -42,6 +42,7 @@ const EventPage = () => {
 
   const { event } = useParams();
 
+
   useEffect(() => {
     getEventData();
     creatorDashboardData();
@@ -122,11 +123,11 @@ const EventPage = () => {
     console.log(
       "Signer: " + (await contract.balanceOf(window.ethereum.selectedAddress))
     );
-    await withSigner.buyTicket({
-      value: ethers.utils.parseEther(price.toString()),
-    });
-    if ((await contract.balanceOf(await signer.getAddress())) > 0) {
-      return true;
+    // await withSigner.buyTicket({
+    //   value: ethers.utils.parseEther(price.toString()),
+    // });
+    // if ((await contract.balanceOf(await signer.getAddress())) > 0) {
+    //   return true;
 
     const ticketTx = await withSigner.buyTicket({
       value: ethers.utils.parseEther(metadata.price.toString()),
@@ -139,7 +140,7 @@ const EventPage = () => {
     } else {
       setIsTicketHolder(false);
     }
-  
+
   }
 
   useEffect(() => {
@@ -165,7 +166,7 @@ const EventPage = () => {
       } catch (err) {
         stream = false;
         console.log(err);
-      } 
+      }
     }
     listenToMessages();
     return async () => {
