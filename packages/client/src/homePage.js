@@ -11,7 +11,7 @@ import axios from "axios";
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
-
+  
   useEffect(() => {
     loadEvents();
   }, []);
@@ -31,19 +31,22 @@ const HomePage = () => {
       data.map(async (event) => {
         let nftContract = new ethers.Contract(event, EventNFT.abi, provider);
         let ipfsLink = await nftContract.metadataUri();
-        let httplink = ipfsLink.replace("ipfs://", "https://ipfs.io/ipfs/");
+        let httplink = ipfsLink.replace("ipfs://", "https://ipfs.io/ipfs/") + "/metadata.json";
         console.log(httplink);
         let metadata = await axios.get(httplink);
         console.log(metadata);
         let item = {
-          name: metadata.name,
-          datetime: metadata.datetime,
+          name: metadata.data.name,
+          datetime: metadata.data.datetime,
+          price: metadata.data.price,
+          address: event,
+          imgUrl: metadata.data.imgUrl,
+          city: metadata.data.city
         };
         return item;
       })
     );
     setEvents(items);
-    console.log(events);
   }
 
   const renderEvents = () => {

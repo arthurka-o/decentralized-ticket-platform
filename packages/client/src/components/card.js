@@ -12,7 +12,7 @@ const Card = (props) => {
       bg="gray.200"
       overflow="hidden"
     >
-      <Image src={event.imageUrl} h="200px" />
+      <Image src={event.imgUrl} h="200px" />
       <Box p={5}>
         <HStack align="baseline" justify="space-between">
           <Text
@@ -47,7 +47,7 @@ const Card = (props) => {
           </Badge>
         </HStack>
         <Box textAlign="center">
-          <Link to={"/events/" + event}>
+          <Link to={"/events/" + event.address}>
             <Button mt={3} color="black" colorScheme="gray" boxShadow="md">
               Go To Event
             </Button>

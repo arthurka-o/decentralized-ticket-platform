@@ -271,7 +271,7 @@ const EventPage = () => {
   return (
     <SimpleGrid columns={2} spacing={0} gap={0} h="100vh">
       <VStack bg="gray.100" w="100%" textAlign="center" p={10}>
-        {/* <Image src={event.image} height="200px" /> */}
+        <Image src={metadata.imgUrl} height="200px" />
         <VStack p={5}>
           <Heading as="h3" size="lg">
             {metadata.name}

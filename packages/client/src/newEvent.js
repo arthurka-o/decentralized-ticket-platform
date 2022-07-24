@@ -48,7 +48,7 @@ const NewEvent = () => {
       description: formInput.description,
       supply: formInput.supply,
       price: formInput.price,
-      imgUrl: fileUrl,
+      imgUrl: fileUrl
     };
 
     jsonObject = new File([JSON.stringify(jsonObject)], "metadata.json", {
