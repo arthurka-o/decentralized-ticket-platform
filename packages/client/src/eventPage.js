@@ -34,28 +34,13 @@ const EventPage = () => {
   const [isTicketHolder, setIsTicketHolder] = useState(false);
   const [metadata, setMetadata] = useState("");
   const [creator, setCreator] = useState("");
-  const [dashboardData, setDashboardData] = useState([]);
+  const [dashboardData, setDashboardData] = useState({});
   const { event } = useParams();
 
-  let pathName = useLocation().pathname;
-  const pathNumber = parseInt(/[0-9]+/.exec(pathName)[0]);
-
-  console.log(event);
-
   useEffect(() => {
-    //setEventAddress(event);
     getEventData();
     creatorDashboardData();
   }, []);
-
-  // async function getEventContractAddress() {
-  //   const web3Modal = new Web3Modal();
-  //   const connection = await web3Modal.connect();
-  //   const provider = new ethers.providers.Web3Provider(connection);
-  //   const contract = new ethers.Contract(factoryAddress, Factory.abi, provider);
-  //   const arrayOfContracts = await contract.allEvents();
-  //   setEventAddress(arrayOfContracts[arrayOfContracts.length -1]);
-  // }
 
   async function creatorDashboardData() {
     const web3Modal = new Web3Modal();
@@ -69,13 +54,15 @@ const EventPage = () => {
     const ticketsSold = allTicketHolders.length;
     const ticketsAvail = totalTickets - ticketsSold;
     const totalEarnings = ticketsSold * metadata.price;
+    console.log(totalEarnings);
 
-    setDashboardData([
-      ticketsSold,
-      ticketsAvail,
-      totalEarnings,
-      allTicketHolders,
-    ]);
+    setDashboardData(
+      {
+      ticketsSold: ticketsSold,
+      ticketsAvail: ticketsAvail,
+      totalEarnings: totalEarnings.toString(),
+      allTicketHolders: allTicketHolders,
+  });
   }
 
   async function getEventData() {
