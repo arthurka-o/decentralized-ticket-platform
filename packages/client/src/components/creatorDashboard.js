@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Box,
   Heading,
@@ -13,14 +14,15 @@ import {
   Td,
   UnorderedList,
   ListItem,
+  Textarea
 } from "@chakra-ui/react";
 
 const CreatorDashboard = (props) => {
-  const { dashboardData } = props;
-  return (
-    <Box mt={5} textAlign="center">
-      <Heading>Creator Dashboard</Heading>
-      <TableContainer>
+  const { message, handleChange, handleMessageSent, dashboardData } = props;
+  return <Box mt={5} textAlign="center">
+    <Heading>Creator Dashboard</Heading>
+    <TableContainer>
+
         <Table>
           <Thead>
             <Tr>
@@ -54,8 +56,20 @@ const CreatorDashboard = (props) => {
       <Button size="lg" mt={10}>
         Message Attendees
       </Button>
-    </Box>
-  );
+
+
+
+    <Textarea
+      placeholder="Type your message here"
+      mt="10"
+      background="white"
+      value={message}
+      onChange={handleChange}
+    />
+
+    <Button size="lg" mt={3} onClick={handleMessageSent}>Message Attendees</Button>
+
+  </Box>;
 };
 
 export default CreatorDashboard;
