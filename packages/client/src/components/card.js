@@ -47,7 +47,7 @@ const Card = (props) => {
           </Badge>
         </HStack>
         <Box textAlign="center">
-          <Link to={"/events/" + event.id} state={{ event: event }}>
+          <Link to={"/events/" + event}>
             <Button mt={3} color="black" colorScheme="gray" boxShadow="md">
               Go To Event
             </Button>

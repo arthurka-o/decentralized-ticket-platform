@@ -29,6 +29,7 @@ const EventPage = () => {
   const [isTicketHolder, setIsTicketHolder] = useState(false);
   const [metadata, setMetadata] = useState("");
   const [creator, setCreator] = useState("");
+  const [dashboardData, setDashboardData] = useState({});
 
   //xmtp
   const [signer, setSigner] = useState(null);
@@ -38,11 +39,36 @@ const EventPage = () => {
   const [newMessage, setNewMessage] = useState(null);
   const [message, setMessage] = useState("");
   const newMessages = useRef([]);
+
   const { event } = useParams();
 
   useEffect(() => {
     getEventData();
+    creatorDashboardData();
   }, []);
+
+  async function creatorDashboardData() {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const contract = new ethers.Contract(event, EventNFT.abi, provider);
+    const totalTickets = parseInt((await contract.totalSupply())._hex);
+
+    const allTicketHolders = await contract.getTicketHolders();
+
+    const ticketsSold = allTicketHolders.length;
+    const ticketsAvail = totalTickets - ticketsSold;
+    const totalEarnings = ticketsSold * metadata.price;
+    console.log(totalEarnings);
+
+    setDashboardData(
+      {
+      ticketsSold: ticketsSold,
+      ticketsAvail: ticketsAvail,
+      totalEarnings: totalEarnings.toString(),
+      allTicketHolders: allTicketHolders,
+  });
+  }
 
   async function getEventData() {
     const web3Modal = new Web3Modal();
@@ -88,6 +114,20 @@ const EventPage = () => {
   async function buyTicket() {
     let contract = new ethers.Contract(event, EventNFT.abi, signer);
     const withSigner = contract.connect(signer);
+
+    console.log(
+      "Address: " +
+        ethers.utils.getAddress("0x8BCdC99F377ce10842bc12FB9585eA20F9733E93")
+    );
+    console.log(
+      "Signer: " + (await contract.balanceOf(window.ethereum.selectedAddress))
+    );
+    await withSigner.buyTicket({
+      value: ethers.utils.parseEther(price.toString()),
+    });
+    if ((await contract.balanceOf(await signer.getAddress())) > 0) {
+      return true;
+
     const ticketTx = await withSigner.buyTicket({
       value: ethers.utils.parseEther(metadata.price.toString()),
     });
@@ -211,6 +251,7 @@ const EventPage = () => {
           handleMessageSent={handleMessageSent}
           message={message}
           handleChange={handleChange}
+          dashboardData={dashboardData}
         />
       )
     } else if (isTicketHolder) {
