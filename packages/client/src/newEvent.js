@@ -12,14 +12,14 @@ import {
   InputLeftAddon,
   InputGroup,
 } from "@chakra-ui/react";
-import { create as ipfsHttpClient } from "ipfs-http-client";
+import ipfsClient from "ipfs-http-client";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { factoryAddress, nftAddress } from "./config/config";
 import Factory from "../src/abis/Factory.json";
-import { NFTStorage } from "nft.storage";
+import { NFTStorage } from 'nft.storage/dist/bundle.esm.min.js'
 
-const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
+const client = ipfsClient("https://ipfs.infura.io:5001/api/v0");
 
 const NewEvent = () => {
   const [fileUrl, setFileUrl] = useState("");

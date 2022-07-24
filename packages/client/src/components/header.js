@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Box, Heading, Flex, Button } from "@chakra-ui/react";
+import React from "react";
+import { Heading, Flex } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <Flex justifyContent="center" mb={10} mt={5} w="100%">

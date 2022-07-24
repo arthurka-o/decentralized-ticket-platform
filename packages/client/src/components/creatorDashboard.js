@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Heading, Button, Text, TableContainer, Table, Thead, Tbody, Th, Tr, Td } from "@chakra-ui/react";
+import { Box, Heading, Button, Textarea, TableContainer, Table, Thead, Tbody, Th, Tr, Td } from "@chakra-ui/react";
 
-const CreatorDashboard = () => {
+const CreatorDashboard = (props) => {
+  const { message, handleChange, handleMessageSent } = props;
   return <Box mt={5} textAlign="center">
     <Heading>Creator Dashboard</Heading>
     <TableContainer>
@@ -27,7 +28,14 @@ const CreatorDashboard = () => {
             </Tbody>
         </Table>
     </TableContainer>
-    <Button size="lg" mt={10}>Message Attendees</Button>
+    <Textarea
+      placeholder="Type your message here"
+      mt="10"
+      background="white"
+      value={message}
+      onChange={handleChange}
+    />
+    <Button size="lg" mt={3} onClick={handleMessageSent}>Message Attendees</Button>
 
   </Box>;
 };
